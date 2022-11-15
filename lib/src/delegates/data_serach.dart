@@ -38,15 +38,19 @@ class DataSearch extends SearchDelegate<String> {
     );
   }
 
+  // ===========================================================================
+  // BUILD LEADING BUTTON (BACK BUTTON)
+  // ===========================================================================
   @override
   Widget buildResults(BuildContext context) {
-    return Container();
+    return FutureBuilder(
+      future: Future.delayed(Duration.zero, () => close(context, query)),
+      builder: ((context, snapshot) => const SizedBox()),
+    );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return query.isEmpty ? Container() : FutureListViewBuilder(future: suggestions(query), onTap: (value) => query = value);
+    return query.isEmpty ? Container() : FutureListViewBuilder(future: YoutubeSuggestionsRepository.suggestions(query), onTap: (value) => close(context, value));
   }
-
-  Future<List<dynamic>> suggestions(String search) async => await YoutubeSuggestionsRepository.suggestions(search);
 }
