@@ -48,9 +48,5 @@ class DataSearch extends SearchDelegate<String> {
     return query.isEmpty ? Container() : FutureListViewBuilder(future: suggestions(query), onTap: (value) => query = value);
   }
 
-  Future<List<dynamic>> suggestions(String search) async {
-    debugPrint('HEY!');
-    debugPrint('SUGGESTIONS: ${await YoutubeSuggestionsRepository.suggestions(search)}');
-    return await YoutubeSuggestionsRepository.suggestions(search);
-  }
+  Future<List<dynamic>> suggestions(String search) async => await YoutubeSuggestionsRepository.suggestions(search);
 }
