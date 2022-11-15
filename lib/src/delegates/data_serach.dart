@@ -51,6 +51,11 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return query.isEmpty ? Container() : FutureListViewBuilder(future: YoutubeSuggestionsRepository.suggestions(query), onTap: (value) => close(context, value));
+    return query.isEmpty
+        ? Container()
+        : FutureListViewBuilder(
+            future: YoutubeSuggestionsRepository.suggestions(query),
+            onTap: (value) => close(context, value),
+          );
   }
 }
