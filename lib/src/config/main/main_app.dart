@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:youtube_share_api_com_bloc/src/home/home_view.dart';
+import 'package:youtube_share_api_com_bloc/src/views/home/home_view.dart';
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});

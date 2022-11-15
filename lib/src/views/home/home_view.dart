@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:youtube_share_api_com_bloc/src/models/youtube_search_model.dart';
+import 'package:youtube_share_api_com_bloc/src/repository/youtube_search_repository.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
