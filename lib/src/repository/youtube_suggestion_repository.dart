@@ -9,6 +9,7 @@ class YoutubeSuggestionsRepository {
   static Future<List<dynamic>> suggestions(String search) async {
     try {
       Response response = await _networking.get(path: 'search?hl=en&ds=yt&client=youtube&hjson=t&cp=1&q=$search&format=5&alt=json');
+
       if (response.statusCode == 200) {
         return json.decode(response.body)[1].map((v) => v[0]).toList();
       } else {
