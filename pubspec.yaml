@@ -39,8 +39,8 @@ dependencies:
   flutter_youtube: ^2.0.0+1
   http: ^0.13.5
   shared_preferences: ^2.0.15
-  rxdart: ^0.27.6
-  bloc_pattern: ^3.0.1
+  rxdart: ^0.27.6  
+  flutter_bloc:
 
 dev_dependencies:
   flutter_test:

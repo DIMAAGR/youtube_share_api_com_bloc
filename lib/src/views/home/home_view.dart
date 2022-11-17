@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:youtube_share_api_com_bloc/src/blocs/videos_listing_bloc.dart';
+import 'package:youtube_share_api_com_bloc/src/blocs/videos_listing_events.dart';
+import 'package:youtube_share_api_com_bloc/src/blocs/videos_listing_state.dart';
 import 'package:youtube_share_api_com_bloc/src/config/constants.dart';
 import 'package:youtube_share_api_com_bloc/src/delegates/data_serach.dart';
-import 'package:youtube_share_api_com_bloc/src/models/youtube_search_model.dart';
-import 'package:youtube_share_api_com_bloc/src/repository/youtube_suggestion_repository.dart';
+import 'package:youtube_share_api_com_bloc/src/views/home/components/video_tile.dart';
 import 'package:youtube_share_api_com_bloc/src/widgets/action_button.dart';
 
 class HomeView extends StatefulWidget {
@@ -13,6 +16,22 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+// BLOC
+  late final VideosBloc bloc;
+
+  @override
+  void initState() {
+    super.initState();
+    bloc = VideosBloc();
+    bloc.inputVideos.add(VideoSearchEvent(''));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    bloc.dispose();
+  }
+
 // youtubeLogo
   SizedBox _showYoutubeLogo() {
     return SizedBox(
@@ -43,8 +62,12 @@ class _HomeViewState extends State<HomeView> {
       // =========================================================================
       // SEARCH BUTTON
       // =========================================================================
+
       ActionButton(
-        onPressed: () => showSearch(context: context, delegate: DataSearch()),
+        onPressed: () async {
+          String? result = await showSearch(context: context, delegate: DataSearch());
+          if (result != null) bloc.inputVideos.add(VideoSearchEvent(result));
+        },
         tooltip: 'Search',
         icon: Icons.search_rounded,
       ),
@@ -70,7 +93,29 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  // Action Button
+  Widget _showVideosCards() {
+    return StreamBuilder(
+        stream: bloc.stream,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data! is VideosFetchedState) {
+              VideosFetchedState videos = snapshot.data! as VideosFetchedState;
+              return ListView.builder(
+                itemCount: videos.videos!.items!.length,
+                itemBuilder: (context, index) => VideoTile(model: videos.videos!.items![index]),
+              );
+            } else if (snapshot.data! is VideosFetchingState) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.data! is VideoSelectedEvent) {
+              return Container();
+            } else {
+              return Container();
+            }
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +124,7 @@ class _HomeViewState extends State<HomeView> {
         title: _showYoutubeLogo(),
         actions: _showAppBarActionsButtons(),
       ),
+      body: _showVideosCards(),
     );
   }
 }
