@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:youtube_share_api_com_bloc/src/blocs/videos_listing_bloc.dart';
 import 'package:youtube_share_api_com_bloc/src/blocs/videos_listing_events.dart';
 import 'package:youtube_share_api_com_bloc/src/blocs/videos_listing_state.dart';
 import 'package:youtube_share_api_com_bloc/src/config/constants.dart';
 import 'package:youtube_share_api_com_bloc/src/delegates/data_serach.dart';
+import 'package:youtube_share_api_com_bloc/src/models/youtube_search_model.dart';
 import 'package:youtube_share_api_com_bloc/src/views/home/components/video_tile.dart';
 import 'package:youtube_share_api_com_bloc/src/widgets/action_button.dart';
 
@@ -18,6 +18,8 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
 // BLOC
   late final VideosBloc bloc;
+  List<Items> listOfVideos = [];
+  String page = '';
 
   @override
   void initState() {
@@ -65,6 +67,7 @@ class _HomeViewState extends State<HomeView> {
 
       ActionButton(
         onPressed: () async {
+          listOfVideos = [];
           String? result = await showSearch(context: context, delegate: DataSearch());
           if (result != null) bloc.inputVideos.add(VideoSearchEvent(result));
         },
@@ -100,9 +103,32 @@ class _HomeViewState extends State<HomeView> {
           if (snapshot.hasData) {
             if (snapshot.data! is VideosFetchedState) {
               VideosFetchedState videos = snapshot.data! as VideosFetchedState;
-              return ListView.builder(
-                itemCount: videos.videos!.items!.length,
-                itemBuilder: (context, index) => VideoTile(model: videos.videos!.items![index]),
+
+              if (videos.videos!.items != null) listOfVideos += videos.videos!.items!;
+              //   debugPrint('PAGE COUNTER: ${videos.videos!.nextPageToken}  ');
+
+              return NotificationListener<ScrollEndNotification>(
+                onNotification: (scrollEnd) {
+                  final metrics = scrollEnd.metrics;
+
+                  if (metrics.atEdge) {
+                    if (metrics.pixels == 0) {
+                      return false;
+                    } else {
+                      //     if (page != videos.videos!.nextPageToken) {
+                      //         bloc.inputVideos.add(VideoNextPageEvent(token: videos.videos!.nextPageToken!, search: videos.videos!.search!));
+                      //        page = videos.videos!.nextPageToken!;
+                      //      }
+                      return true;
+                    }
+                  }
+
+                  return false;
+                },
+                child: ListView.builder(
+                  itemCount: listOfVideos.length,
+                  itemBuilder: (context, index) => VideoTile(model: listOfVideos[index]),
+                ),
               );
             } else if (snapshot.data! is VideosFetchingState) {
               return const Center(child: CircularProgressIndicator());

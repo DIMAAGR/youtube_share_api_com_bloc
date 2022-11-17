@@ -1,7 +1,7 @@
 class Const {
   Const._();
 
-  static const String apiKey = 'AIzaSyBGjjSBzdrs09l3A6lHmvF9Rc3Qx4ehN10';
+  static const String apiKey = 'AIzaSyB0jqCdt7BPrw2QtnIx2Vk83CApV_d1njQ';
   static const String googleApiYoutubeV3URL = 'https://www.googleapis.com/youtube/v3/';
   static const String googleSuggestQueriesURL = 'http://suggestqueries.google.com/complete/';
   static const String youtubeIconImageLink = 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/YouTube_Logo_2017.svg/1024px-YouTube_Logo_2017.svg.png';

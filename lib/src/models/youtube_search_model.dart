@@ -1,4 +1,5 @@
 class YoutubeSearchModel {
+  String? search;
   String? kind;
   String? etag;
   String? nextPageToken;
@@ -13,6 +14,7 @@ class YoutubeSearchModel {
     this.regionCode,
     this.pageInfo,
     this.items,
+    this.search,
   });
 
   YoutubeSearchModel.fromJson(Map<String, dynamic> json) {

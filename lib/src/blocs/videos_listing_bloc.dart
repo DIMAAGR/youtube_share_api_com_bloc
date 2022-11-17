@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:youtube_share_api_com_bloc/src/blocs/videos_listing_events.dart';
 import 'package:youtube_share_api_com_bloc/src/blocs/videos_listing_state.dart';
 import 'package:youtube_share_api_com_bloc/src/models/youtube_search_model.dart';
+import 'package:youtube_share_api_com_bloc/src/repository/youtube_next_page_videos_repository.dart';
 import 'package:youtube_share_api_com_bloc/src/repository/youtube_videos_repository.dart';
 
 class VideosBloc {
@@ -21,13 +22,17 @@ class VideosBloc {
 
   void _mapEventToState(VideosListingEvent event) async {
     YoutubeSearchModel search = YoutubeSearchModel();
-    _outputVideosController.sink.add(VideosFetchingState());
+    if (event is VideoNextPageEvent == false) {
+      _outputVideosController.sink.add(VideosFetchingState());
+    }
 
     try {
       if (event is VideoSearchEvent) {
         search = await YoutubeVideosRepository.doSearchVideos(event.searchValue);
         _outputVideosController.sink.add(VideosFetchedState(videos: search));
-      } else if (event is VideoSelectedEvent) {
+      } else if (event is VideoNextPageEvent) {
+        search = await YoutubeNextPageVideosRepository.doGoToNextPage(event.searchValue, event.nextPageToken);
+        _outputVideosController.sink.add(VideosFetchedState(videos: search));
         //...
       }
     } catch (_) {
