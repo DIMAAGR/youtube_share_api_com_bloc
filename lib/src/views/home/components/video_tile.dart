@@ -8,20 +8,25 @@ class VideoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          height: 200,
-          width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(image: DecorationImage(image: NetworkImage(model.snippet!.thumbnails!.high!.url!), fit: BoxFit.cover)),
-        ),
-        ListTile(
-          onTap: null,
-          title: Text(model.snippet!.title!, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800)),
-        )
-      ],
+    return InkWell(
+      onTap: () {},
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            height: 200,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(image: DecorationImage(image: NetworkImage(model.snippet!.thumbnails!.high!.url!), fit: BoxFit.cover)),
+          ),
+          ListTile(
+            onTap: null,
+            contentPadding: const EdgeInsets.only(left: 8, right: 8, bottom: 4),
+            title: Text(model.snippet!.title!, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700), maxLines: 2),
+            subtitle: Text(model.snippet!.channelTitle!, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+          )
+        ],
+      ),
     );
   }
 }
