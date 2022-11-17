@@ -29,11 +29,20 @@ class VideosBloc {
     try {
       if (event is VideoSearchEvent) {
         search = await YoutubeVideosRepository.doSearchVideos(event.searchValue);
-        _outputVideosController.sink.add(VideosFetchedState(videos: search));
+
+        if (search.items == null) {
+          _outputVideosController.sink.add(VideoErrorState());
+        } else {
+          _outputVideosController.sink.add(VideosFetchedState(videos: search));
+        }
       } else if (event is VideoNextPageEvent) {
         search = await YoutubeNextPageVideosRepository.doGoToNextPage(event.searchValue, event.nextPageToken);
-        _outputVideosController.sink.add(VideosFetchedState(videos: search));
-        //...
+
+        if (search.items == null) {
+          _outputVideosController.sink.add(VideoErrorState());
+        } else {
+          _outputVideosController.sink.add(VideosFetchedState(videos: search));
+        }
       }
     } catch (_) {
       _outputVideosController.sink.add(VideoErrorState());

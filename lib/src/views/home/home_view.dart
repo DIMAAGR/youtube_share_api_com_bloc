@@ -5,6 +5,7 @@ import 'package:youtube_share_api_com_bloc/src/blocs/videos_listing_state.dart';
 import 'package:youtube_share_api_com_bloc/src/config/constants.dart';
 import 'package:youtube_share_api_com_bloc/src/delegates/data_serach.dart';
 import 'package:youtube_share_api_com_bloc/src/models/youtube_search_model.dart';
+import 'package:youtube_share_api_com_bloc/src/views/home/components/video_list.dart';
 import 'package:youtube_share_api_com_bloc/src/views/home/components/video_tile.dart';
 import 'package:youtube_share_api_com_bloc/src/widgets/action_button.dart';
 
@@ -101,44 +102,12 @@ class _HomeViewState extends State<HomeView> {
         stream: bloc.stream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            if (snapshot.data! is VideosFetchedState) {
-              VideosFetchedState videos = snapshot.data! as VideosFetchedState;
-
-              if (videos.videos!.items != null) listOfVideos += videos.videos!.items!;
-              //   debugPrint('PAGE COUNTER: ${videos.videos!.nextPageToken}  ');
-
-              return NotificationListener<ScrollEndNotification>(
-                onNotification: (scrollEnd) {
-                  final metrics = scrollEnd.metrics;
-
-                  if (metrics.atEdge) {
-                    if (metrics.pixels == 0) {
-                      return false;
-                    } else {
-                      //     if (page != videos.videos!.nextPageToken) {
-                      //         bloc.inputVideos.add(VideoNextPageEvent(token: videos.videos!.nextPageToken!, search: videos.videos!.search!));
-                      //        page = videos.videos!.nextPageToken!;
-                      //      }
-                      return true;
-                    }
-                  }
-
-                  return false;
-                },
-                child: ListView.builder(
-                  itemCount: listOfVideos.length,
-                  itemBuilder: (context, index) => VideoTile(model: listOfVideos[index]),
-                ),
-              );
-            } else if (snapshot.data! is VideosFetchingState) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.data! is VideoSelectedEvent) {
-              return Container();
-            } else {
-              return Container();
-            }
+            return VideoListWidget(
+              state: snapshot.data!,
+              onScrollDown: (search, token) => bloc.inputVideos.add(VideoNextPageEvent(token: token, search: search)),
+            );
           } else {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator(color: Colors.grey, strokeWidth: 6));
           }
         });
   }
